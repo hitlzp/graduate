@@ -606,10 +606,6 @@ def Mycourseajax(request):
             all_objects = Course_t.objects.all()
             for course in all_objects:
                 all_students = Students.objects.filter(course_id = course.id)
-                print course.id
-                print len(all_students) < course.sum
-                print str(course.starttime) > thedatetime
-                print (course.id not in temp)
                 if len(all_students) < course.sum and str(course.starttime) > thedatetime and  (course.id not in temp):
                     #判断筛选出那些未选满，开课时间晚于当前日期并且该学生未选修的课程
                     theteacher = User.objects.filter(id = course.teacher_id)
@@ -623,3 +619,21 @@ def Mycourseajax(request):
                     temp2 = []
     thedic = {"allcourse":allcourse, "yy":len(allcourse)}
     return JsonResponse(thedic)
+
+def Addcourse(request):#学生点击课程名实现添加课程
+    if request.POST:
+        if request.is_ajax():
+            addit = Students(course_id = request.POST.get('id'),\
+                                  stu_id = request.user.id,\
+                                  group = 0,\
+                                  grade = 0,\
+                                  )
+            addit.save()
+    return JsonResponse({"ff":1})
+
+def Coursemessage(request):#点击课程显示课程介绍
+    if request.POST:
+        if request.is_ajax():
+            all_objects = Course_t.objects.filter(id = request.POST.get('id'))
+            print request.POST.get('id')
+    return JsonResponse({"mess":all_objects[0].recommend})

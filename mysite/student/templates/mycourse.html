@@ -7,8 +7,12 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/templatemo_style.css" rel="stylesheet"> 
         
-	<script src="/static/js/jquery-1.10.2.min.js"></script> 
+	
 	<script src="/static/js/templatemo_custom.js"></script>
+	
+	<link rel="stylesheet" href="/static/js/jDialog/jDialog.css" type="text/css">
+	<script type="text/javascript" src="/static/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/js/jDialog.js"></script>
 	<script>
 	var post_data ={
 			"name":111,
@@ -21,7 +25,6 @@
 			  success: function(mydata){
 				for(var i =0; i < mydata["yy"];i++)
 				{
-
 					document.getElementById("name"+mydata["allcourse"][i][0].toFixed(0)).innerHTML = mydata["allcourse"][i][1];
 					document.getElementById("snum"+mydata["allcourse"][i][0].toFixed(0)).innerHTML = mydata["allcourse"][i][2];
 					document.getElementById("sum"+mydata["allcourse"][i][0].toFixed(0)).innerHTML = mydata["allcourse"][i][3];
@@ -33,7 +36,43 @@
 			  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
 			  // contentType : 'application/json',
 			});
-		</script>
+	
+	function add(event)
+	{
+		var chid ={
+					"id":event,
+					};
+					
+		$.ajax({
+				  type : "POST", //要插入数据，所以是POST协议 
+				  url : "/student/coursemessage/", //注意结尾的斜线，否则会出现500错误
+				  data : chid, //JSON数据
+				  success: function(mydata){
+					var dialog = jDialog.confirm("课程简介：\n" + mydata["mess"],{
+						handler : function(button,dialog) {
+							$.ajax({
+							  type : "POST", //要插入数据，所以是POST协议 
+							  url : "/student/addcourse/", //注意结尾的斜线，否则会出现500错误
+							  data : chid, //JSON数据
+							  success: function(mydata){
+
+							  },
+							});
+							dialog.close();
+							location.reload();
+						}
+					},{
+						handler : function(button,dialog) {
+							dialog.close();
+						}
+					});
+				  },
+				});
+				
+		
+	}
+	
+	</script>
  </head>
   
   <body style="background: #dfdfdf;">  
@@ -61,11 +100,11 @@
 		</tr>
         {% for i in coursenum %}
 		  <tr>
-			<td><a id = "name{{i}}" style="color:black" href= "/student/addcourse?id={{i}}"></td>
-			<td><font id = "snum{{i}}" color="black"><font></td>
-			<td><font id = "sum{{i}}" color="black"><font></td>
-			<td><font id = "teacher{{i}}" color="black"><font></td>
-			<td><font id = "date{{i}}" color="black"><font></td>
+			<td><a id = "name{{i}}" style="color:black"  href="javascript:add({{i}});"></td>
+			<td><a id = "snum{{i}}" style="color:black"  href="javascript:add({{i}});"></td>
+			<td><a id = "sum{{i}}" style="color:black"  href="javascript:add({{i}});"></td>
+			<td><a id = "teacher{{i}}" style="color:black"  href="javascript:add({{i}});"></td>
+			<td><a id = "date{{i}}" style="color:black"  href="javascript:add({{i}});"></td>
 		  </tr>
 		{% endfor %}
     </table> 
