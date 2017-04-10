@@ -25,7 +25,7 @@ SECRET_KEY = 'jcg25+oc_ewx=(u29f*3#8q+i9)(4myj3=04iulf0*thbh8oy!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

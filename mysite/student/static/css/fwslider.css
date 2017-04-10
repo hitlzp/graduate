@@ -96,7 +96,7 @@ body > div.images-slider {
     left:0;
     position: absolute;
     width:100%;
-    height:100%;
+    height:auto;
     min-height:650px;
 }
 #fwslider .slide_content_wrap { /* Slider Text Content Container Style */

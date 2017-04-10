@@ -11,6 +11,8 @@ from django.utils.encoding import smart_unicode, smart_str
 from django.http import JsonResponse
 import random
 from random import choice
+import datetime
+import time
 
 def menu(request):#开始菜单
     return render_to_response("start.html")
@@ -198,7 +200,8 @@ def forgot(request):#学生教师忘记密码
 def studentmain(request):#学生首页
     if logcheck_s(request) == 0:
         return HttpResponseRedirect("/student/")
-    return render_to_response("student_main.html")
+    student= User.objects.filter(id = request.user.id)
+    return render_to_response("student_main.html",{'student':student[0]})
 def teachermain(request):#教师首页
     if logcheck_t(request) == 0:
         return HttpResponseRedirect("/teacher/")
@@ -569,3 +572,54 @@ def Randgroup(request):#随机选择小组
             fen_zu = request.POST.get('name')
             all_objects = Course_t.objects.filter(id = fen_zu)
     return JsonResponse({"czu":choice(range(1, all_objects[0].groupsum +1))})
+
+def Mycourse(request):
+    temp = []#存储学生选修过的课程的id
+    temp2 = []
+    stuid = request.user.id
+    stucourse = Students.objects.filter(stu_id = stuid)#获取当前用户参加课程的id
+    for selectedcourse in stucourse:
+        temp.append(selectedcourse.course_id)
+    time.localtime(time.time())
+    thedatetime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))#获取当前时间
+    all_objects = Course_t.objects.all()
+    for course in all_objects:
+        all_students = Students.objects.filter(course_id = course.id)
+        if len(all_students) < course.sum and str(course.starttime) > thedatetime and  (course.id not in temp):
+            #判断筛选出那些未选满，开课时间晚于当前日期并且该学生未选修的课程
+            temp2.append(course.id)
+    return render_to_response("mycourse.html", {"coursenum":temp2})
+
+def Mycourseajax(request):
+    temp = []#存储学生选修过的课程的id
+    temp2= []
+    allcourse = []
+    if request.POST:
+        if request.is_ajax():
+            print request.POST.get('name')
+            stuid = request.user.id
+            stucourse = Students.objects.filter(stu_id = stuid)#获取当前用户参加课程的id
+            for selectedcourse in stucourse:
+                temp.append(selectedcourse.course_id)
+            time.localtime(time.time())
+            thedatetime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))#获取当前时间
+            all_objects = Course_t.objects.all()
+            for course in all_objects:
+                all_students = Students.objects.filter(course_id = course.id)
+                print course.id
+                print len(all_students) < course.sum
+                print str(course.starttime) > thedatetime
+                print (course.id not in temp)
+                if len(all_students) < course.sum and str(course.starttime) > thedatetime and  (course.id not in temp):
+                    #判断筛选出那些未选满，开课时间晚于当前日期并且该学生未选修的课程
+                    theteacher = User.objects.filter(id = course.teacher_id)
+                    temp2.append(course.id)
+                    temp2.append(course.cname)
+                    temp2.append(len(all_students))
+                    temp2.append(course.sum)
+                    temp2.append(theteacher[0].username)
+                    temp2.append(course.starttime)
+                    allcourse.append(temp2)
+                    temp2 = []
+    thedic = {"allcourse":allcourse, "yy":len(allcourse)}
+    return JsonResponse(thedic)
