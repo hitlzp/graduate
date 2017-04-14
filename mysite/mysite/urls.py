@@ -46,4 +46,6 @@ urlpatterns = patterns('', url(r'^admin/', include(admin.site.urls)), \
                         url(r'^student/mycourseajax/$', 'student.views.Mycourseajax'), \
                         url(r'^student/addcourse/$', 'student.views.Addcourse'), \
                         url(r'^student/coursemessage/$', 'student.views.Coursemessage'), \
+                        url(r'^student/inclass/$', 'student.views.Stuinclass'), \
+                        url(r'^teacher/gradeteacher/$', 'student.views.Grade_t'), \
                         )

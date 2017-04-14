@@ -119,11 +119,11 @@ body {
 		<div class="sidebar">
 				<div class="menu_box_list">
 					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id="sid" onclick = "doSubmit()"><a style="width: 220px;height:60px"">开始</a></button></td>
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "WhichButton({{model.id}});"><a style="width: 220px;height:60px"">评分</a></button></td>
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "WhichButton({{model.id}});"><a style="width: 220px;height:60px"">下一环节</a></button></td>
+					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Grade();"><a style="width: 220px;height:60px"">评分</a></button></td>
+					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Nextseg();"><a style="width: 220px;height:60px"">下一环节</a></button></td>
 					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randstu();"><a style="width: 220px;height:60px"">随机（人）</a></button></td>
 					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randgroup();"><a style="width: 220px;height:60px"">随机（组）</a></button></td>
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Fenzu()"><a style="width: 220px;height:60px"">随机分组</a></button></td>
+					<td class="text-center"><button id = "randzu" type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Fenzu()"><a style="width: 220px;height:60px"">随机分组</a></button></td>
 					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;"><a style="width: 220px;height:60px"">待定</a></button></td>
 				</div>
 			<div class="sidebar_grid">
@@ -145,7 +145,8 @@ body {
 							<tr id="row1">  
 								<td>学生</td>  
 								<td>组号</td>
-								<td>成绩</td>  
+								<td>成绩</td>
+								<td>评价</td> 								
 							</tr> 
 						</thead>
 						<tbody>
@@ -159,7 +160,7 @@ body {
 				<div class="clear"></div>
 					<div class="content_btm666">
 						<div class="content_btm_grid" align="center">
-							<h2>倒计时</h2>
+							<h2>环节<span id="thenext"></span></h2>
 							<div class="Countdown" id="time">
 								<span id="m"></span><span class="bd">:</span><span id="s"></span>
 							</div>

@@ -511,6 +511,9 @@ def inclassajax(request):#处理下拉栏选择课程
     stu_name = []#存学生名
     stu_group = []#存学生分组
     stu_grade = []#存学生总成绩
+    stu_pingjia = []
+    temp = []
+    segment = []#存储当前选择课程的各个环节的名称、时间、介绍、比例
     if request.POST:
         if request.is_ajax():
             courseid = request.POST.get('name')
@@ -521,9 +524,20 @@ def inclassajax(request):#处理下拉栏选择课程
                 stu_name.append(stuname[0].username)
                 stu_group.append(stu.group)
                 stu_grade.append(stu.grade)
+                stu_pingjia.append(stu.pingjia)
     #print stu_group
+    theseg = Segmnet_t.objects.filter(tcourse_id = courseid)#记录当前选择课程的各个环节
+    segment.append(all_objects[0].segmentsum)#第一个位置存储环节数量
+    for seg in theseg:
+        temp.append(seg.sname)
+        temp.append(seg.minute)
+        temp.append(seg.content)
+        temp.append(seg.ratio)
+        segment.append(temp)
+        temp = []
     cdic = {"coursemess":all_objects[0].recommend, "groupnum":all_objects[0].sum / all_objects[0].groupsum,\
-            "stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade}
+            "stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade,"stupingjia":stu_pingjia,\
+            "segment": segment}
     return JsonResponse(cdic)
 
 def Fenzu(request):#教师点击分组按钮随机分组
@@ -532,6 +546,7 @@ def Fenzu(request):#教师点击分组按钮随机分组
     stu_name = []#向教师提交分组后的学生列表
     stu_group = []
     stu_grade = []
+    stu_pingjia = []
     if request.POST:
         if request.is_ajax():
             fen_zu = request.POST.get('name')#fen_zu不为0时进行分组
@@ -550,7 +565,8 @@ def Fenzu(request):#教师点击分组按钮随机分组
                         stu_name.append(stuname[0].username)
                         stu_group.append(all_objects3[0].group)
                         stu_grade.append(all_objects3[0].grade)
-    cdic = {"stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade}      
+                        stu_pingjia.append(all_objects3[0].pingjia)
+    cdic = {"stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade, "stupingjia":stu_pingjia}      
     return JsonResponse(cdic)
 
 def Randstu(request):#随机选择学生
@@ -576,10 +592,12 @@ def Randgroup(request):#随机选择小组
 def Mycourse(request):
     temp = []#存储学生选修过的课程的id
     temp2 = []
+    mycourse = []#存储该学生所选择的课程的全部信息
     stuid = request.user.id
     stucourse = Students.objects.filter(stu_id = stuid)#获取当前用户参加课程的id
     for selectedcourse in stucourse:
         temp.append(selectedcourse.course_id)
+        mycourse.append(Course_t.objects.filter(id = selectedcourse.course_id)[0])
     time.localtime(time.time())
     thedatetime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))#获取当前时间
     all_objects = Course_t.objects.all()
@@ -588,7 +606,13 @@ def Mycourse(request):
         if len(all_students) < course.sum and str(course.starttime) > thedatetime and  (course.id not in temp):
             #判断筛选出那些未选满，开课时间晚于当前日期并且该学生未选修的课程
             temp2.append(course.id)
-    return render_to_response("mycourse.html", {"coursenum":temp2})
+    check_box_list = request.REQUEST.getlist('removecourse')
+    for j in  check_box_list:
+        Students.objects.filter(course_id = j, stu_id = stuid).delete()
+    if not len(check_box_list) == 0:#删除后刷新当前网页
+        return HttpResponseRedirect("/student/mycourse/")
+    cdic = {"coursenum":temp2,"mycourse":mycourse}
+    return render_to_response("mycourse.html", cdic)
 
 def Mycourseajax(request):
     temp = []#存储学生选修过的课程的id
@@ -596,7 +620,6 @@ def Mycourseajax(request):
     allcourse = []
     if request.POST:
         if request.is_ajax():
-            print request.POST.get('name')
             stuid = request.user.id
             stucourse = Students.objects.filter(stu_id = stuid)#获取当前用户参加课程的id
             for selectedcourse in stucourse:
@@ -637,3 +660,39 @@ def Coursemessage(request):#点击课程显示课程介绍
             all_objects = Course_t.objects.filter(id = request.POST.get('id'))
             print request.POST.get('id')
     return JsonResponse({"mess":all_objects[0].recommend})
+
+def Stuinclass(request):
+    return render_to_response("stu_inclass.html")
+
+def Grade_t(request):#教师发起全员评分请求
+    course = []#存储选中课程信息
+    segment = []#存储选中课程所有环节信息
+    temp = []
+    temp2 = []
+    if request.POST:
+        if request.is_ajax():
+            print request.POST.get('name')
+            all_course = Course_t.objects.filter(id = request.POST.get('name'))
+            course.append(all_course[0].sum)
+            course.append(all_course[0].groupsum)
+            course.append(all_course[0].segmentsum)
+            course.append(all_course[0].mytype)
+            
+            all_segment = Segmnet_t.objects.filter(tcourse_id = request.POST.get('name'))
+            for thesegment in all_segment:
+                temp.append(thesegment.sname)
+                temp.append(thesegment.minute)
+                temp.append(thesegment.ratio)
+                
+                all_table = Table_t.objects.filter(tsegment_id = thesegment.id)
+                temp2 = []
+                temp2 = [0]*5
+                for thetable in all_table:
+                    temp2[thetable.choice - 1] = thetable.ratio
+                temp.append(temp2)
+                segment.append(temp)
+                temp = []
+    #course [课程容量，小组人数，环节数，评分类型]
+    #segment[环节名称， 环节时间，环节比例， [评分1比例， 评分2比例， 评分3比例， 评分4比例， 评分5比例]]
+    cdic = {"course":course, "segment":segment}
+    return JsonResponse(cdic)

@@ -11,7 +11,7 @@
 	<script src="/static/js/templatemo_custom.js"></script>
 	
 	<link rel="stylesheet" href="/static/js/jDialog/jDialog.css" type="text/css">
-	<script type="text/javascript" src="/static/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="/static/js/jDialog.js"></script>
 	<script>
 	var post_data ={
@@ -81,8 +81,7 @@
 	<div id = "a">
 		<ul>
 			<li><a href="/student/main/">|返回首页</a></li>
-			<li><a href="/logout/">|注销</a></li>
-			<li><a href="/student/selectedcourse/">我的课程</a></li>
+			<li><a href="/logout/">注销</a></li>
 		</ul>
 	
 	</div>
@@ -108,17 +107,13 @@
 		  </tr>
 		{% endfor %}
     </table> 
-	
-	
     </div>
     
-    <!-- logo start -->
-    <div class="logocontainer">
-    	<div class="row">
-            <div class="templatemo_footer"> </div>
-       </div>
-    </div>
-    <!-- logo end -->  
+	<div>
+		<span style="position:absolute; right:100px; bottom:50px;">
+		<button type="button" style="width:100px;height:50px;"><a style="color:black;font-size:17px;" href="javascript:;" data-toggle="modal" data-target="#templatemo_modal">我的课程</a></button>
+		</span>
+	</div>
 	
 	
 	<!-- Modal -->
@@ -127,24 +122,24 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	        <h4 class="modal-title" id="myModalLabel">删除课程</h4>
+	        <h4 class="modal-title" id="myModalLabel">我的课程</h4>
 			
 				<br /><br /> 
-				<form action="" method="get">课程编号&nbsp&nbsp&nbsp&nbsp课程名称&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp开课日期<br /><br /> 
-					{% for Course_w in all_objects %}
-					&nbsp&nbsp&nbsp&nbsp<label><input name="deletecourse" type="checkbox" value={{Course_w.id}} />{{Course_w.id}} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-					{{Course_w.cname}}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{Course_w.starttime}}
-					</label> <br /><br /> 
+				<form action="" method="get">课程名称&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp开课时间<br /><br /> 
+					{% for Course_w in mycourse %}
+					<div title = "课程介绍：{{Course_w.recommend}}"><label><input name="removecourse" type="checkbox" value={{Course_w.id}}>
+					{{Course_w.cname}} &nbsp&nbsp&nbsp&nbsp{{Course_w.starttime}}
+					</label></div>
 					{% endfor %}
 					<div class="modal-footer">
-						<input type="submit" value="确认删除"> 
+						<input type="submit" value="退选"> 
 					</div>
 				</form> 
 
-	    </div>
-	  </div>
+				</div>
+			</div>
+		</div>
 	</div>
-	<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
   </body>
 </html>

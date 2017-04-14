@@ -20,7 +20,11 @@ function selectcourse()//下拉栏选择课程
 			  success: function(mydata){
 				document.getElementById("a").innerHTML = mydata["coursemess"];
 				Showtable(mydata)
-				
+				document.getElementById("thenext").innerHTML= 1;
+				document.getElementById("m").innerHTML = mydata["segment"][1][1];
+				document.getElementById("s").innerHTML = 0;
+				m = mydata["segment"][1][1];
+				s = 0;
 			  },
 			  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
 			  // contentType : 'application/json',
@@ -56,7 +60,11 @@ function selectcourse()//下拉栏选择课程
 						
 					var cellObj2 = rowObj.insertCell(2);  //添加第三个单元格及其信息  
 				    cellObj2.className = 'center';  
-				    cellObj2.innerHTML = mydata["stugrade"][k];  
+				    cellObj2.innerHTML = mydata["stugrade"][k]; 
+
+					var cellObj3 = rowObj.insertCell(3);  //添加第三个单元格及其信息  
+				    cellObj3.className = 'center';  
+				    cellObj3.innerHTML = mydata["stupingjia"][k];  
 				}
 		}
 		
@@ -118,6 +126,12 @@ function selectcourse()//下拉栏选择课程
 			});
 		}
 		
+		function Nextseg()
+		{
+			document.getElementById("thenext").innerHTML++;
+		}
+		
+		
 		
 		function showName(){  
 		var index = Math.floor(Math.random()*mydata.length);  
@@ -144,11 +158,16 @@ function selectcourse()//下拉栏选择课程
 
 		
 		//倒计时
-		var m=1,s=10;  
+			var m = 0;
+			var s = 0;
+			//var m= document.getElementById("m").innerText;
+
             var mytime=null;  
             //开始倒计时  
-            function doSubmit(){  
-                run();  
+            function doSubmit(){
+                run(); 
+				document.getElementById("randzu").disabled= true;
+				document.getElementById("selectcourse").disabled= true;
                 document.getElementById("sid").disabled=true;  
                 document.getElementById("tid").disabled=false;  
                 document.getElementById("gid").disabled=true;  
@@ -157,7 +176,7 @@ function selectcourse()//下拉栏选择课程
               
             //执行倒计时  
             function run(){  
-                //输出  
+                //输出
                 document.getElementById('m').innerHTML = m;
 				document.getElementById('s').innerHTML = s;;  
                 s--;  
@@ -188,3 +207,26 @@ function selectcourse()//下拉栏选择课程
                 document.getElementById("tid").disabled=false;  
                 document.getElementById("gid").disabled=true;  
             }
+			
+			function Grade()//评分
+			{
+				   //需要实现控制可以加if() while()实现
+				var t = document.getElementById("selectcourse");   
+				var selectValue=t.options[t.selectedIndex].value;//获取select的值
+				//alert(selectValue);
+
+				var post_data ={
+				"name":selectValue,
+				};
+				
+				$.ajax({
+				  type : "POST", //要插入数据，所以是POST协议 
+				  url : "/teacher/gradeteacher/", //注意结尾的斜线，否则会出现500错误
+				  data : post_data, //JSON数据
+				  // data:"name=" + event,
+				  success: function(mydata){
+
+				  },
+				});
+				
+			}

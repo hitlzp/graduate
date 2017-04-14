@@ -36,4 +36,4 @@ class Students(models.Model):
     course = models.ForeignKey(Course_t)
     group = models.IntegerField(default=0)
     grade = models.FloatField(default=0)
-    
+    pingjia = models.CharField(max_length=100)
