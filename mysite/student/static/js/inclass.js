@@ -62,9 +62,6 @@ function selectcourse()//下拉栏选择课程
 				    cellObj2.className = 'center';  
 				    cellObj2.innerHTML = mydata["stugrade"][k]; 
 
-					var cellObj3 = rowObj.insertCell(3);  //添加第三个单元格及其信息  
-				    cellObj3.className = 'center';  
-				    cellObj3.innerHTML = mydata["stupingjia"][k];  
 				}
 		}
 		
@@ -225,7 +222,8 @@ function selectcourse()//下拉栏选择课程
 				  data : post_data, //JSON数据
 				  // data:"name=" + event,
 				  success: function(mydata){
-
+					document.getElementById("stumess").style.visibility="hidden";//隐藏
+					document.getElementById("ping").disabled=true;
 				  },
 				});
 				

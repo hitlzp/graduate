@@ -511,7 +511,6 @@ def inclassajax(request):#处理下拉栏选择课程
     stu_name = []#存学生名
     stu_group = []#存学生分组
     stu_grade = []#存学生总成绩
-    stu_pingjia = []
     temp = []
     segment = []#存储当前选择课程的各个环节的名称、时间、介绍、比例
     if request.POST:
@@ -524,7 +523,6 @@ def inclassajax(request):#处理下拉栏选择课程
                 stu_name.append(stuname[0].username)
                 stu_group.append(stu.group)
                 stu_grade.append(stu.grade)
-                stu_pingjia.append(stu.pingjia)
     #print stu_group
     theseg = Segmnet_t.objects.filter(tcourse_id = courseid)#记录当前选择课程的各个环节
     segment.append(all_objects[0].segmentsum)#第一个位置存储环节数量
@@ -536,7 +534,7 @@ def inclassajax(request):#处理下拉栏选择课程
         segment.append(temp)
         temp = []
     cdic = {"coursemess":all_objects[0].recommend, "groupnum":all_objects[0].sum / all_objects[0].groupsum,\
-            "stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade,"stupingjia":stu_pingjia,\
+            "stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade,\
             "segment": segment}
     return JsonResponse(cdic)
 
@@ -546,7 +544,6 @@ def Fenzu(request):#教师点击分组按钮随机分组
     stu_name = []#向教师提交分组后的学生列表
     stu_group = []
     stu_grade = []
-    stu_pingjia = []
     if request.POST:
         if request.is_ajax():
             fen_zu = request.POST.get('name')#fen_zu不为0时进行分组
@@ -565,8 +562,7 @@ def Fenzu(request):#教师点击分组按钮随机分组
                         stu_name.append(stuname[0].username)
                         stu_group.append(all_objects3[0].group)
                         stu_grade.append(all_objects3[0].grade)
-                        stu_pingjia.append(all_objects3[0].pingjia)
-    cdic = {"stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade, "stupingjia":stu_pingjia}      
+    cdic = {"stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade}      
     return JsonResponse(cdic)
 
 def Randstu(request):#随机选择学生
@@ -693,6 +689,6 @@ def Grade_t(request):#教师发起全员评分请求
                 segment.append(temp)
                 temp = []
     #course [课程容量，小组人数，环节数，评分类型]
-    #segment[环节名称， 环节时间，环节比例， [评分1比例， 评分2比例， 评分3比例， 评分4比例， 评分5比例]]
+    #segment[[环节名称， 环节时间，环节比例， [评分1比例， 评分2比例， 评分3比例， 评分4比例， 评分5比例]], [...], [...], [...]]
     cdic = {"course":course, "segment":segment}
     return JsonResponse(cdic)

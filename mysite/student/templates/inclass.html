@@ -42,7 +42,7 @@ h1,h2,h3{
 	padding:0;
 }
 
-.title { background: #FFF; border: 1px solid #9DB3C5; padding: 1px; width:90%;margin:20px auto; }
+.title { background: #FFF; border: 1px solid #9DB3C5; padding: 1px; width:100%;margin:20px auto; }
 	.title h1 { line-height: 31px; text-align:center;  background: #2F589C url(th_bg2.gif);
  background-repeat: repeat-x; background-position: 0 0; color: #FFF; }
 		.title th, .title td { border: 1px solid #CAD9EA; padding: 5px; }
@@ -119,7 +119,7 @@ body {
 		<div class="sidebar">
 				<div class="menu_box_list">
 					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id="sid" onclick = "doSubmit()"><a style="width: 220px;height:60px"">开始</a></button></td>
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Grade();"><a style="width: 220px;height:60px"">评分</a></button></td>
+					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id = "ping" onclick = "Grade();"><a style="width: 220px;height:60px"">评分</a></button></td>
 					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Nextseg();"><a style="width: 220px;height:60px"">下一环节</a></button></td>
 					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randstu();"><a style="width: 220px;height:60px"">随机（人）</a></button></td>
 					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randgroup();"><a style="width: 220px;height:60px"">随机（组）</a></button></td>
@@ -137,21 +137,21 @@ body {
 		<div class="content">
 			<div class="clear"></div> 
 				<div class="content_btm">
-					<div class="title">
+					<div class="title"  id = "stumess">
 						<h1>学生分组信息</h1>
+					
+						<table border="0" cellpadding="0" cellspacing="0" id="mytable">  
+							<thead>
+								<tr id="row1">  
+									<td>学生</td>  
+									<td>组号</td>
+									<td>成绩</td>								
+								</tr> 
+							</thead>
+							<tbody>
+							</tbody>
+						</table> 
 					</div>
-					<table border="0" cellpadding="0" cellspacing="0" id="mytable">  
-						<thead>
-							<tr id="row1">  
-								<td>学生</td>  
-								<td>组号</td>
-								<td>成绩</td>
-								<td>评价</td> 								
-							</tr> 
-						</thead>
-						<tbody>
-						</tbody>
-					</table> 
 				</div>	
 		</div>
 		
