@@ -247,7 +247,7 @@ function selectcourse()//下拉栏选择课程
 
 					if(mydata["segment"][seg - 1][3][0] != 0)//这个if处理教师对小组的评价，成绩结果由thegrade返回，thegrade = [小组数，组1， 组2， 。。。。]
 					{
-						alert("教师评价小组");
+						//alert("教师评价小组");
 						document.getElementById("t2g").style.display="";//显
 	
 
@@ -268,7 +268,7 @@ function selectcourse()//下拉栏选择课程
 					
 					if(mydata["segment"][seg - 1][3][1] != 0)//这个if处理教师对每位学生的评价，成绩结果由thegrade2返回，thegrade = [学生数，学生1成绩， 
 					{										//学生2成绩， 。。。。]
-						alert("教师评价每位学生");
+						//alert("教师评价每位学生");
 						document.getElementById("t2s").style.display="";//显
 	
 
@@ -294,9 +294,10 @@ function selectcourse()//下拉栏选择课程
 						
 					}
 					
+					//event.srcElement ? event.srcElement : event.target;
 					document.onclick=function()//当教师点击提交按钮
-					{ var obj = event.srcElement;
-
+					{ 
+					var obj = event.srcElement;//这里火狐会报错
 						if(obj.type == "button"){
 							if(obj.id == "t2gb"){
 								thegrade[0] = mydata["course"][0] / mydata["course"][1];
@@ -305,7 +306,7 @@ function selectcourse()//下拉栏选择课程
 									thegrade[w] = document.getElementById("t2g_input"+w.toString()).value;
 								}
 								document.getElementById("t2gb").disabled= true;
-								alert(thegrade);
+								
 							}
 							else if(obj.id == "t2sb"){
 								thegrade2[0] = mydata["course"][0];
@@ -314,7 +315,34 @@ function selectcourse()//下拉栏选择课程
 									thegrade2[w] = document.getElementById("t2s_input"+w.toString()).value;
 								}
 								document.getElementById("t2sb").disabled= true;
-								alert(thegrade2);
+								
+							}
+							else if(obj.id == "commitgrade"){
+								document.getElementById("commitgrade").disabled= true;
+								var post_data ={
+								"grade1":thegrade,
+								"grade2":thegrade2,
+								};
+								//alert(thegrade);
+								//alert(thegrade2);
+								$.ajax({
+								  type : "POST", //要插入数据，所以是POST协议 
+								  url : "/teacher/gradefromteacher/", //注意结尾的斜线，否则会出现500错误
+								  traditional:true,  //加上此项可以传数组
+								  data : post_data, //JSON数据
+								  // data:"name=" + event,
+								  success: function(mydata){
+									document.getElementById("a").innerHTML = mydata["coursemess"];
+									Showtable(mydata)
+									document.getElementById("thenext").innerHTML= 1;
+									document.getElementById("m").innerHTML = mydata["segment"][1][1];
+									document.getElementById("s").innerHTML = 0;
+									m = mydata["segment"][1][1];
+									s = 0;
+								  },
+								  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
+								  // contentType : 'application/json',
+								});
 							}
 						}
 					}
@@ -324,47 +352,7 @@ function selectcourse()//下拉栏选择课程
 					{
 						document.getElementById("remind").style.display="";//显
 					}
-					
-					
-					
-					/*document.onclick=function()//当教师点击提交按钮
-						{ var obj = event.srcElement;
-							if(obj.type == "button"){
-								if(obj.id = "commitgrade"){
-									document.getElementById("nextseg").disabled= false;
-								}
-							}
-						}
-					
-					
-					
-					var post_data ={
-					"grade1":thegrade[0],
-					"grade2":thegrade2,
-					};
-					
-					$.ajax({
-					  type : "POST", //要插入数据，所以是POST协议 
-					  url : "/teacher/gradefromteacher/", //注意结尾的斜线，否则会出现500错误
-					  data : post_data, //JSON数据
-					  // data:"name=" + event,
-					  success: function(mydata){
-						document.getElementById("a").innerHTML = mydata["coursemess"];
-						Showtable(mydata)
-						document.getElementById("thenext").innerHTML= 1;
-						document.getElementById("m").innerHTML = mydata["segment"][1][1];
-						document.getElementById("s").innerHTML = 0;
-						m = mydata["segment"][1][1];
-						s = 0;
-					  },
-					  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
-					  // contentType : 'application/json',
-					});
-					
-					*/
-					
-					
-					
+
 				  },
 				});
 				

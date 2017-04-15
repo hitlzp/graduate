@@ -709,8 +709,9 @@ def Grade_t(request):#教师发起全员评分请求
 def GfromT(request):
     if request.POST:
         if request.is_ajax():
-            ThtoGro = request.POST.get('grade1')
-            ThtoStu = request.POST.get('grade2')
-            print ThtoGro
-            print ThtoStu
+            t_to_g = request.POST.getlist('grade1')
+            t_to_s = request.POST.getlist('grade2')
+
+            print t_to_g
+            print t_to_s
     return JsonResponse()
