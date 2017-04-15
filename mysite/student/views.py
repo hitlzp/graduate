@@ -665,6 +665,8 @@ def Grade_t(request):#教师发起全员评分请求
     segment = []#存储选中课程所有环节信息
     temp = []
     temp2 = []
+    stuname = []#存储学生姓名
+    stugroup = []#存储学生分组
     if request.POST:
         if request.is_ajax():
             print request.POST.get('name')
@@ -688,7 +690,27 @@ def Grade_t(request):#教师发起全员评分请求
                 temp.append(temp2)
                 segment.append(temp)
                 temp = []
+            
+            all_student = Students.objects.filter(course_id = request.POST.get('name'))
+            for thestu in all_student:
+                haha = User.objects.filter(id = thestu.stu_id)
+                stuname.append(haha[0].username)
+                stugroup.append(thestu.group)
     #course [课程容量，小组人数，环节数，评分类型]
     #segment[[环节名称， 环节时间，环节比例， [评分1比例， 评分2比例， 评分3比例， 评分4比例， 评分5比例]], [...], [...], [...]]
-    cdic = {"course":course, "segment":segment}
+    #stuname 存储选择该课程学生的姓名
+    #stugroup 存储选择该课程的学生小组号
+
+    cdic = {"course":course, "segment":segment, "stuname":stuname, "stugroup":stugroup}
     return JsonResponse(cdic)
+
+
+
+def GfromT(request):
+    if request.POST:
+        if request.is_ajax():
+            ThtoGro = request.POST.get('grade1')
+            ThtoStu = request.POST.get('grade2')
+            print ThtoGro
+            print ThtoStu
+    return JsonResponse()
