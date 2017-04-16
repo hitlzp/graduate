@@ -261,7 +261,7 @@ function selectcourse()//下拉栏选择课程
 							cellObj0.innerHTML = k;  
 							
 							var theid = 't2g_input' + k.toString();
-							rowObj.insertCell().innerHTML = '<input type="number" id= "'+theid+ '" style="width:120px;border-width:0px;text-align:center;border-style:none">';
+							rowObj.insertCell().innerHTML = '<input type="number" min = 0 max = 100 value = 0 id= "'+theid+ '" style="width:120px;border-width:0px;text-align:center;border-style:none">';
 						}
 					}
 					
@@ -288,7 +288,7 @@ function selectcourse()//下拉栏选择课程
 							cellObj2.innerHTML = mydata["stugroup"][k-1];  
 							
 							var theid = 't2s_input' + k.toString();
-							rowObj.insertCell().innerHTML = '<input type="number" id= "'+theid+ '" style="width:60px;border-width:0px;text-align:center;border-style:none">';
+							rowObj.insertCell().innerHTML = '<input type="number" min = 0 max = 100 value = 0 id= "'+theid+ '" style="width:60px;border-width:0px;text-align:center;border-style:none">';
 						}
 						
 						
@@ -322,23 +322,20 @@ function selectcourse()//下拉栏选择课程
 								var post_data ={
 								"grade1":thegrade,
 								"grade2":thegrade2,
+								"courseid":selectValue,//课程id
+								"segnum":seg-1,//环节编号，seg-1从0开始
 								};
-								//alert(thegrade);
-								//alert(thegrade2);
+								alert(thegrade);
+								alert(thegrade2);
 								$.ajax({
 								  type : "POST", //要插入数据，所以是POST协议 
 								  url : "/teacher/gradefromteacher/", //注意结尾的斜线，否则会出现500错误
 								  traditional:true,  //加上此项可以传数组
 								  data : post_data, //JSON数据
 								  // data:"name=" + event,
-								  success: function(mydata){
-									document.getElementById("a").innerHTML = mydata["coursemess"];
-									Showtable(mydata)
-									document.getElementById("thenext").innerHTML= 1;
-									document.getElementById("m").innerHTML = mydata["segment"][1][1];
-									document.getElementById("s").innerHTML = 0;
-									m = mydata["segment"][1][1];
-									s = 0;
+								  success: function(mydata3){
+									  alert(11111);
+									document.getElementById("nextseg").disabled= false;
 								  },
 								  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
 								  // contentType : 'application/json',

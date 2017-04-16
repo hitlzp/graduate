@@ -706,12 +706,33 @@ def Grade_t(request):#教师发起全员评分请求
 
 
 
-def GfromT(request):
+def GfromT(request):#从前端获取教师对学生的评价信息，课程编号以及环节编号
+    grade = []
+    stuid = []#存储数据库中学生的学号
     if request.POST:
         if request.is_ajax():
-            t_to_g = request.POST.getlist('grade1')
-            t_to_s = request.POST.getlist('grade2')
-
-            print t_to_g
-            print t_to_s
-    return JsonResponse()
+            t_to_g = request.POST.getlist('grade1')#教师对小组整体评价
+            t_to_s = request.POST.getlist('grade2')#教师对每位学生评价
+            courseid = request.POST.get('courseid')#课程id
+            segnum = request.POST.get('segnum')#环节编号，从0开始
+            segment = Segmnet_t.objects.filter(tcourse_id = courseid)[int(segnum)]#segment就是当前环节
+            table_g= Table_t.objects.filter(tsegment_id = segment.id, choice =1)
+            stu = Students.objects.filter(course_id = courseid)
+            for w in range(0, len(stu)):
+                grade.append(stu[w].grade)#grade存储数据库中学生成绩，后面对其更新
+                stuid.append(stu[w].id)
+            if table_g:
+                for i in range(1, int(t_to_g[0])+1):
+                    t_to_g[i] = int(t_to_g[i]) * table_g[0].ratio / 100.00#按比例转化后的小组成绩
+                for i in range(1, int(t_to_s[0])+1):#将教师对小组的评分更新
+                    grade[i-1] = grade[i-1] + int(t_to_g[stu[i-1].group])     
+            table_s= Table_t.objects.filter(tsegment_id = segment.id, choice =2)
+            if table_s:
+                for j in range(1, int(t_to_s[0])+1):
+                    t_to_s[j] = int(t_to_s[j])* table_s[0].ratio / 100.00#按比例转化后的每位学生的成绩
+                    grade[j-1] = grade[j-1] + int(t_to_s[j])#加上教师对每位同学的评分
+            for k in range(0, int(t_to_s[0])):
+                Students.objects.filter(id = stuid[k]).update(
+                                                              grade = grade[k],\
+                                                              )
+    return JsonResponse({"state":"OK!"})
