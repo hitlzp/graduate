@@ -538,6 +538,20 @@ def inclassajax(request):#处理下拉栏选择课程
             "segment": segment}
     return JsonResponse(cdic)
 
+
+def startcourse(request):#教师点击开始按钮
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('name')
+            seg = request.POST.get('seg')
+            print courseid
+            if int(seg) == 1:#只有在第一环节点击开始按钮课程成绩才清零
+                Students.objects.filter(course_id = courseid).update(
+                                                            grade = 0,\
+                                                              )
+    return JsonResponse()
+
+
 def Fenzu(request):#教师点击分组按钮随机分组
     fen_zu = 0
     stu = []#存储选择本课程的学生ID，用于产生随机分组

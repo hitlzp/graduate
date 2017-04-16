@@ -170,7 +170,28 @@ function selectcourse()//下拉栏选择课程
 				
 				document.getElementById("ping").disabled=false;
 				document.getElementById("randstu").disabled=false;  	
-				document.getElementById("randgroup").disabled=false;  	  				
+				document.getElementById("randgroup").disabled=false;  
+				
+				var t = document.getElementById("selectcourse");   
+				var selectValue=t.options[t.selectedIndex].value;//获取select的值
+				seg = document.getElementById("thenext").innerText;//获取当前环节数
+				
+				var post_data ={
+				"name":selectValue,
+				"seg":seg,
+				};
+				$.ajax({
+					 type : "POST", //要插入数据，所以是POST协议 
+					url : "/teacher/startcourse/", //注意结尾的斜线，否则会出现500错误
+					traditional:true,  //加上此项可以传数组
+					data : post_data, //JSON数据
+					// data:"name=" + event,
+					success: function(mydata3){
+
+					},
+					// dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
+					// contentType : 'application/json',
+					});
                 return false;  
             }  
               
@@ -325,8 +346,6 @@ function selectcourse()//下拉栏选择课程
 								"courseid":selectValue,//课程id
 								"segnum":seg-1,//环节编号，seg-1从0开始
 								};
-								alert(thegrade);
-								alert(thegrade2);
 								$.ajax({
 								  type : "POST", //要插入数据，所以是POST协议 
 								  url : "/teacher/gradefromteacher/", //注意结尾的斜线，否则会出现500错误
@@ -334,12 +353,14 @@ function selectcourse()//下拉栏选择课程
 								  data : post_data, //JSON数据
 								  // data:"name=" + event,
 								  success: function(mydata3){
-									  alert(11111);
 									document.getElementById("nextseg").disabled= false;
 								  },
 								  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
 								  // contentType : 'application/json',
 								});
+								document.getElementById("stumess").style.display="";//显
+								document.getElementById("t2s").style.display="none";//隐藏
+								document.getElementById("t2g").style.display="none";//隐藏
 							}
 						}
 					}
