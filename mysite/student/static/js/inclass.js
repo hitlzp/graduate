@@ -127,6 +127,35 @@ function selectcourse()//下拉栏选择课程
 		function Nextseg()
 		{
 			document.getElementById("thenext").innerHTML++;
+			document.getElementById("sid").disabled=false; 
+			
+			var t = document.getElementById("selectcourse");   
+			var selectValue=t.options[t.selectedIndex].value;//获取select的值
+			seg = document.getElementById("thenext").innerText;//获取当前环节数
+				
+			var post_data ={
+			"name":selectValue,
+			"seg":seg - 1,
+			};
+			$.ajax({
+				 type : "POST", //要插入数据，所以是POST协议 
+				url : "/teacher/nextsegment/", //注意结尾的斜线，否则会出现500错误
+				traditional:true,  //加上此项可以传数组
+				data : post_data, //JSON数据
+				// data:"name=" + event,
+				success: function(mydata){
+					clearInterval(mytime)
+					mytime=null;
+					document.getElementById("m").innerHTML = mydata["time"];
+					document.getElementById("s").innerHTML = 0;
+					m = mydata["time"];
+					s = 0;
+					document.getElementById("nextseg").disabled=true;
+					document.getElementById("ping").disabled=false;
+				},
+				// dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
+				// contentType : 'application/json',
+			});
 		}
 		
 		
@@ -270,8 +299,16 @@ function selectcourse()//下拉栏选择课程
 					{
 						//alert("教师评价小组");
 						document.getElementById("t2g").style.display="";//显
-	
-
+						
+						var tableObj = document.getElementById('t2gmess');  
+						var rowNums = tableObj.rows.length;
+						var length = tableObj.rows.length
+						for(var i = 1; i < length;i++)//切换课程时清除之前打印的表
+						{
+							document.getElementById('t2gmess').deleteRow(1);
+						}
+						
+						
 						for(var k = 1; k < mydata["course"][0] / mydata["course"][1] + 1;k++)
 						{
 							var tableObj = document.getElementById('t2gmess');  
@@ -292,7 +329,15 @@ function selectcourse()//下拉栏选择课程
 						//alert("教师评价每位学生");
 						document.getElementById("t2s").style.display="";//显
 	
-
+						var tableObj = document.getElementById('t2smess');  
+						var rowNums = tableObj.rows.length;
+						var length = tableObj.rows.length
+						for(var i = 1; i < length;i++)//切换课程时清除之前打印的表
+						{
+							document.getElementById('t2smess').deleteRow(1);
+						}
+						
+						
 						for(var k = 1; k < mydata["course"][0] + 1;k++)
 						{
 							var tableObj = document.getElementById('t2smess');  
@@ -329,7 +374,7 @@ function selectcourse()//下拉栏选择课程
 								document.getElementById("t2gb").disabled= true;
 								
 							}
-							else if(obj.id == "t2sb"){
+							if(obj.id == "t2sb"){
 								thegrade2[0] = mydata["course"][0];
 								for(var w = 1; w < mydata["course"][0] + 1;w++)
 								{
@@ -338,7 +383,7 @@ function selectcourse()//下拉栏选择课程
 								document.getElementById("t2sb").disabled= true;
 								
 							}
-							else if(obj.id == "commitgrade"){
+							if(obj.id == "commitgrade"){
 								document.getElementById("commitgrade").disabled= true;
 								var post_data ={
 								"grade1":thegrade,
@@ -354,6 +399,12 @@ function selectcourse()//下拉栏选择课程
 								  // data:"name=" + event,
 								  success: function(mydata3){
 									document.getElementById("nextseg").disabled= false;
+									if(mydata3["state"] == 1)
+									{
+										alert("课程结束!");
+										document.getElementById("nextseg").disabled=true;
+										document.getElementById("sid").disabled=true;
+									}
 								  },
 								  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
 								  // contentType : 'application/json',

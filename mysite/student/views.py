@@ -551,6 +551,15 @@ def startcourse(request):#教师点击开始按钮
                                                               )
     return JsonResponse()
 
+def nextsegment(request):#教师点击下一环节
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('name')
+            seg = request.POST.get('seg')
+            segment = Segmnet_t.objects.filter(tcourse_id = courseid)
+            time = segment[int(seg)].minute
+    cdic = {"time":time}
+    return JsonResponse(cdic)
 
 def Fenzu(request):#教师点击分组按钮随机分组
     fen_zu = 0
@@ -723,6 +732,7 @@ def Grade_t(request):#教师发起全员评分请求
 def GfromT(request):#从前端获取教师对学生的评价信息，课程编号以及环节编号
     grade = []
     stuid = []#存储数据库中学生的学号
+    state = 0#state为0时正常，当state为1时表示已到该课程最后一个环节
     if request.POST:
         if request.is_ajax():
             t_to_g = request.POST.getlist('grade1')#教师对小组整体评价
@@ -749,4 +759,12 @@ def GfromT(request):#从前端获取教师对学生的评价信息，课程编�
                 Students.objects.filter(id = stuid[k]).update(
                                                               grade = grade[k],\
                                                               )
-    return JsonResponse({"state":"OK!"})
+
+
+            segment2 = Segmnet_t.objects.filter(tcourse_id = courseid)
+            time = segment2[int(segnum)].minute
+            print int(segnum)
+            print Course_t.objects.filter(id = courseid)[0].segmentsum
+            if int(segnum) == Course_t.objects.filter(id = courseid)[0].segmentsum - 1:
+                state = 1  
+    return JsonResponse({"state":state})

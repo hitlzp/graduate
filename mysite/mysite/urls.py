@@ -50,4 +50,5 @@ urlpatterns = patterns('', url(r'^admin/', include(admin.site.urls)), \
                         url(r'^teacher/gradeteacher/$', 'student.views.Grade_t'), \
                         url(r'^teacher/gradefromteacher/$', 'student.views.GfromT'), \
                         url(r'^teacher/startcourse/$', 'student.views.startcourse'), \
+                        url(r'^teacher/nextsegment/$', 'student.views.nextsegment'), \
                         )
