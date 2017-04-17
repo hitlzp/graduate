@@ -680,8 +680,15 @@ def Coursemessage(request):#点击课程显示课程介绍
             print request.POST.get('id')
     return JsonResponse({"mess":all_objects[0].recommend})
 
-def Stuinclass(request):
-    return render_to_response("stu_inclass.html")
+def Stuinclass(request):#学生进入课堂界面，mycourse为当前学生选修的课程
+    stucourse = []
+    stuid = request.user.id
+    mycourses = Students.objects.filter(stu_id = stuid)
+    for course in mycourses:
+        thecourse = Course_t.objects.filter(id = course.course_id)[0]
+        stucourse.append(thecourse)
+    cdic = {"mycourse":stucourse}
+    return render_to_response("stu_inclass.html", cdic)
 
 def Grade_t(request):#教师发起全员评分请求
     course = []#存储选中课程信息
@@ -790,4 +797,13 @@ def GfromT(request):#从前端获取教师对学生的评价信息，课程编�
                 temp.append(seg.ratio)
                 temp = []
     cdic = {"stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade, "state":state}  
+    return JsonResponse(cdic)
+
+def Stu_inclass(request):#学生选择即将参加的课程（课堂），返回课程的相关信息
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('name')
+            print courseid
+            selectedcourse = Course_t.objects.filter(id = courseid)[0]#学生选择的一个课程
+    cdic = {"cname":selectedcourse.cname, "courserecommend":selectedcourse.recommend}
     return JsonResponse(cdic)

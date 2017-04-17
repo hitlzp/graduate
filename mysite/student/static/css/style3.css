@@ -91,9 +91,32 @@ body {
 .main-menu-link-text {
 	margin-bottom: 0;
 	position: absolute;
-	left: 20px;
-	bottom: 15px;
+	left: 20%;
+	bottom: 70%;
 }
+
+.main-menu-link-text2 {
+	margin-bottom: 0;
+	position: absolute;
+	left: 10%;
+	bottom: 30%;
+}
+
+/* 设置时钟倒计时 start*/
+.box{border:1px solid 
+#C0C0C0;width:1280px;height:50px;clip:rect(0px,181px,18px,0px);overflow:hidden;} 
+.box2{border:1px solid 
+#F4F4F4;width:1280px;height:50px;clip:rect(0px,179px,16px,0px);overflow:hidden;} 
+select{position:relative;left:-2px;top:-2px;font-size:42px;width:1280px;line-height:45px;bo 
+rder:0px;color:#909993;} 
+
+
+.Countdown{ padding-top: 30px; font-size:30px; font-family: tahoma,arial,simsun; color: #4A4A4A;}
+.Countdown span{ display:inline-block;*display:inline;*zoom:1; width:55px;line-height:55px;text-align:center; background-color:#fff; margin-left:2px;}
+.Countdown .bd{ width:16px; background-image:none;}
+:root .Countdown span{}
+
+/* 设置时钟倒计时 end*/
 
 .menu-container {	
 	padding-left: 0;
