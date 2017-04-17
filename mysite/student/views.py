@@ -761,10 +761,33 @@ def GfromT(request):#从前端获取教师对学生的评价信息，课程编�
                                                               )
 
 
-            segment2 = Segmnet_t.objects.filter(tcourse_id = courseid)
+            segment2 = Segmnet_t.objects.filter(tcourse_id = courseid)#这一部分是在点提交成绩按钮后判断是否为最后一个环节，若是则state为1
             time = segment2[int(segnum)].minute
             print int(segnum)
             print Course_t.objects.filter(id = courseid)[0].segmentsum
             if int(segnum) == Course_t.objects.filter(id = courseid)[0].segmentsum - 1:
-                state = 1  
-    return JsonResponse({"state":state})
+                state = 1
+                
+                
+            stu_name = []#存学生名
+            stu_group = []#存学生分组
+            stu_grade = []#存学生总成绩
+            temp = []
+            if request.POST:
+                if request.is_ajax():
+                    all_objects2 = Students.objects.filter(course_id = courseid)#获取本课程学生列表
+                    for stu in all_objects2:
+                        stuname = User.objects.filter(id = stu.stu_id)
+                        stu_name.append(stuname[0].username)
+                        stu_group.append(stu.group)
+                        stu_grade.append(stu.grade)
+            #print stu_group
+            theseg = Segmnet_t.objects.filter(tcourse_id = courseid)#记录当前选择课程的各个环节
+            for seg in theseg:
+                temp.append(seg.sname)
+                temp.append(seg.minute)
+                temp.append(seg.content)
+                temp.append(seg.ratio)
+                temp = []
+    cdic = {"stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade, "state":state}  
+    return JsonResponse(cdic)

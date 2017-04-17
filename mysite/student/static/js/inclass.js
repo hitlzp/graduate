@@ -268,6 +268,9 @@ function selectcourse()//下拉栏选择课程
 				document.getElementById("randzu").disabled= true;
 				document.getElementById("selectcourse").disabled= true;
 				document.getElementById("commitgrade").disabled= false;
+
+				document.getElementById("t2sb").disabled= false;
+				document.getElementById("t2gb").disabled= false;
 				
 				var post_data ={
 				"name":selectValue,
@@ -285,16 +288,17 @@ function selectcourse()//下拉栏选择课程
 					seg = document.getElementById("thenext").innerText;//获取当前环节数
 					
 					var thegrade=new Array()
-					for(var t = 0; t < mydata["course"][0] / mydata["course"][1] + 1; t++)//初始化数组为0
+					for(var t = 1; t < mydata["course"][0] / mydata["course"][1] + 1; t++)//初始化数组为0
 					{
 						thegrade[t] = 0;
 					}
+					thegrade[0] = mydata["course"][0] / mydata["course"][1];
 					var thegrade2=new Array()
-					for(var t = 0; t < mydata["course"][0] + 1; t++)//初始化数组为0
+					for(var t = 1; t < mydata["course"][0] + 1; t++)//初始化数组为0
 					{
 						thegrade2[t] = 0;
 					}
-
+					thegrade2[0] = mydata["course"][0];
 					if(mydata["segment"][seg - 1][3][0] != 0)//这个if处理教师对小组的评价，成绩结果由thegrade返回，thegrade = [小组数，组1， 组2， 。。。。]
 					{
 						//alert("教师评价小组");
@@ -366,7 +370,6 @@ function selectcourse()//下拉栏选择课程
 					var obj = event.srcElement;//这里火狐会报错
 						if(obj.type == "button"){
 							if(obj.id == "t2gb"){
-								thegrade[0] = mydata["course"][0] / mydata["course"][1];
 								for(var w = 1; w < mydata["course"][0] / mydata["course"][1] + 1;w++)
 								{
 									thegrade[w] = document.getElementById("t2g_input"+w.toString()).value;
@@ -375,7 +378,6 @@ function selectcourse()//下拉栏选择课程
 								
 							}
 							if(obj.id == "t2sb"){
-								thegrade2[0] = mydata["course"][0];
 								for(var w = 1; w < mydata["course"][0] + 1;w++)
 								{
 									thegrade2[w] = document.getElementById("t2s_input"+w.toString()).value;
@@ -391,6 +393,8 @@ function selectcourse()//下拉栏选择课程
 								"courseid":selectValue,//课程id
 								"segnum":seg-1,//环节编号，seg-1从0开始
 								};
+								alert(thegrade);
+								alert(thegrade2);
 								$.ajax({
 								  type : "POST", //要插入数据，所以是POST协议 
 								  url : "/teacher/gradefromteacher/", //注意结尾的斜线，否则会出现500错误
@@ -398,6 +402,7 @@ function selectcourse()//下拉栏选择课程
 								  data : post_data, //JSON数据
 								  // data:"name=" + event,
 								  success: function(mydata3){
+									Showtable(mydata3)
 									document.getElementById("nextseg").disabled= false;
 									if(mydata3["state"] == 1)
 									{
